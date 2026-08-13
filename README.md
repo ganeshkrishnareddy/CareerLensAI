@@ -254,13 +254,19 @@ npm run test:e2e            # Playwright (requires a running dev server)
 2. Import `github.com/ganeshkrishnareddy/CareerLensAI` into Vercel.
 3. Set the environment variables from [.env.example](.env.example) —
    at minimum `DATABASE_URL` (Postgres) and `AUTH_SECRET`.
-4. Push the schema and seed the production database once:
+4. Push the schema and seed the production database once (run locally, with
+   `DATABASE_URL` pointing at the Postgres URL):
    ```bash
-   npx prisma db push
-   npx prisma db seed
+   DATABASE_URL="postgresql://…" npm run db:prod
    ```
 5. Deploy. `vercel.json` and the `build` script handle the rest
    (`prisma generate` runs automatically before `next build`).
+
+> **If the app loads but sign-in returns “Something went wrong. Please try
+> again.”** the database is not configured on Vercel. Set `DATABASE_URL` to a
+> Postgres URL (SQLite cannot persist on serverless) and `AUTH_SECRET`, then
+> run step 4 and redeploy. The exact error is logged server-side as
+> `login error: …` in Vercel → Runtime Logs.
 
 ### Option B — Docker (single container)
 
