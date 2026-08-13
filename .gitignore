@@ -1,0 +1,38 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+
+# prisma
+prisma/*.db
+prisma/*.db-journal
+
+# testing
+coverage/
+playwright-report/
+test-results/
+
+# tsc incremental build info
+*.tsbuildinfo
+
+# misc
+.DS_Store
+*.pem
+*.log
+
+# env
+.env
+.env.local
+.env.production
+
+# vercel
+.vercel
+
+# local tooling state (Freebuff client internal data — never commit)
+.freebuff/
+
+# runtime uploads
+uploads/

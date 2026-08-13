@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 356 64">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="0.55" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#d946ef"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <rect x="6" y="8" width="48" height="48" rx="12" fill="url(#lg)"/>
+    <circle cx="30" cy="32" r="11.5" fill="none" stroke="#ffffff" stroke-width="4.2" opacity="0.95"/>
+    <circle cx="30" cy="32" r="4.2" fill="#ffffff"/>
+    <path d="M41 10 L42.5 14.6 L47.1 16.1 L42.5 17.6 L41 22.2 L39.5 17.6 L34.9 16.1 L39.5 14.6 Z" fill="#ffffff" opacity="0.95"/>
+  </g>
+  <text x="68" y="40" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="27" font-weight="800" letter-spacing="-0.5" fill="#0f172a">CareerLens</text>
+  <text x="232" y="40" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="27" font-weight="800" letter-spacing="-0.5" fill="url(#lg)">AI</text>
+</svg>
