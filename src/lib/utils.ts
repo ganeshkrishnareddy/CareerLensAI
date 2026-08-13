@@ -2,6 +2,23 @@ export function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * Resolve the public app origin, tolerating missing, empty, or malformed
+ * NEXT_PUBLIC_APP_URL values (Vercel may inject it as an empty string, which
+ * would otherwise crash new URL("")).
+ */
+export function appUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (raw) {
+    try {
+      return new URL(raw).toString().replace(/\/$/, "");
+    } catch {
+      // fall through to the default
+    }
+  }
+  return "http://localhost:3001";
+}
+
 export function formatDate(d: Date | string | null | undefined, opts?: Intl.DateTimeFormatOptions) {
   if (!d) return "—";
   const date = typeof d === "string" ? new Date(d) : d;

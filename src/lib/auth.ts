@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { prisma } from "./db";
+import { appUrl } from "./utils";
 import type { Role } from "./security";
 
 export const SESSION_COOKIE = "cl_session";
@@ -117,7 +118,7 @@ export function roleHome(role: Role): string {
 
 // ── Password reset ────────────────────────────────────────────────
 export function resetLinkBase(): string {
-  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  return appUrl();
 }
 
 export async function createResetToken(email: string): Promise<string> {
