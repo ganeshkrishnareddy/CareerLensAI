@@ -1,15 +1,13 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT } from "jose";
 import { prisma } from "./db";
 import { appUrl } from "./utils";
+import { verifyJwt, sessionSecret, SESSION_COOKIE, RESET_COOKIE } from "./jwt";
 import type { Role } from "./security";
 
-export const SESSION_COOKIE = "cl_session";
-export const RESET_COOKIE = "cl_reset_token";
-
-const secret = () => new TextEncoder().encode(process.env.AUTH_SECRET ?? "insecure-dev-secret-change-me");
+export { SESSION_COOKIE, RESET_COOKIE };
 
 export function sessionTtlSeconds(): number {
   const ttl = Number(process.env.SESSION_TTL_SECONDS ?? 604800);
@@ -46,17 +44,10 @@ export async function createSessionToken(user: SessionUser, purpose: "session" |
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(Math.floor(Date.now() / 1000) + ttl)
-    .sign(secret());
+    .sign(sessionSecret());
 }
 
-export async function verifyToken<T = SessionPayload>(token: string): Promise<T | null> {
-  try {
-    const { payload } = await jwtVerify(token, secret());
-    return payload as unknown as T;
-  } catch {
-    return null;
-  }
-}
+export const verifyToken = verifyJwt;
 
 export async function setSessionCookie(user: SessionUser) {
   const token = await createSessionToken(user);
@@ -79,7 +70,7 @@ export async function getSession(): Promise<SessionUser | null> {
   const store = await cookies();
   const token = store.get(SESSION_COOKIE)?.value;
   if (!token) return null;
-  const payload = await verifyToken(token);
+  const payload = await verifyToken<SessionPayload>(token);
   if (!payload || payload.purpose !== "session" || !payload.sub) return null;
   return {
     id: payload.sub,
@@ -126,7 +117,7 @@ export async function createResetToken(email: string): Promise<string> {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(Math.floor(Date.now() / 1000) + 30 * 60)
-    .sign(secret());
+    .sign(sessionSecret());
 }
 
 export async function updatePasswordWithResetToken(token: string, newPassword: string): Promise<{ ok: boolean; error?: string }> {

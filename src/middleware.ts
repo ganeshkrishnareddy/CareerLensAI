@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify } from "jose";
-import { SESSION_COOKIE } from "./lib/auth";
-
-const secret = new TextEncoder().encode(process.env.AUTH_SECRET ?? "insecure-dev-secret-change-me");
+import { SESSION_COOKIE, verifyJwt } from "./lib/jwt";
 
 type Role = "STUDENT" | "FACULTY" | "ADMIN";
 
@@ -28,15 +25,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/api/");
 
   const token = request.cookies.get(SESSION_COOKIE)?.value;
-  let session: Payload | null = null;
-  if (token) {
-    try {
-      const { payload } = await jwtVerify(token, secret);
-      session = payload as Payload;
-    } catch {
-      session = null;
-    }
-  }
+  const session = token ? await verifyJwt<Payload>(token) : null;
 
   // API routes: let handlers decide (they re-verify + enforce roles server-side).
   if (pathname.startsWith("/api/")) {
